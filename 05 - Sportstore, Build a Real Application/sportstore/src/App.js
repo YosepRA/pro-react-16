@@ -1,5 +1,25 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom';
+import { SportStoreDataStore } from './data/DataStore';
+import { ShopConnector } from './shop/ShopConnector';
 
-export default function App() {
-  return <h1 className="display-4">Chapter 05 - SportStore</h1>;
+export default class App extends Component {
+  render() {
+    return (
+      <Provider store={SportStoreDataStore}>
+        <Router>
+          <Switch>
+            <Route path="/shop" component={ShopConnector} />
+            <Redirect to="/shop" />
+          </Switch>
+        </Router>
+      </Provider>
+    );
+  }
 }
