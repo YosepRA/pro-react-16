@@ -4,7 +4,7 @@ import { CartDetailsRows } from './CartDetailsRows';
 
 export class CartDetails extends Component {
   getLinkClasses = () =>
-    `btn btn-secondary m-1 ${!this.props.cartItems ? 'disabled' : ''}`;
+    `btn btn-primary m-1 ${!this.props.cartItems ? 'disabled' : ''}`;
 
   render() {
     return (
@@ -31,7 +31,7 @@ export class CartDetails extends Component {
         </table>
 
         <div className="text-center">
-          <Link className="btn btn-primary m-1" to="/shop">
+          <Link className="btn btn-secondary m-1" to="/shop">
             Continue Shopping
           </Link>
           <Link className={this.getLinkClasses()} to="/shop/checkout">
