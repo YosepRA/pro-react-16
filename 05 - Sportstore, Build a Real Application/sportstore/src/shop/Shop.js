@@ -14,7 +14,6 @@ export class Shop extends Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <div className="container-fluid">
         <div className="row">

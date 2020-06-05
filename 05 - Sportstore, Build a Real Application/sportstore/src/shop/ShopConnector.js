@@ -55,6 +55,12 @@ export const ShopConnector = connect(
             exact={true}
           />
 
+          <Redirect
+            from="/shop/products"
+            to="/shop/products/all/1"
+            exact={true}
+          />
+
           <Route
             path="/shop/:section/:category?/:page?"
             render={routeProps => this.selectComponent(routeProps)}

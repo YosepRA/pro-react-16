@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/YosepRA/pro-react-16#readme",
   "devDependencies": {
+    "@playlyfe/gql": "^2.6.2",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.1.0",
     "eslint-config-prettier": "^6.11.0",
