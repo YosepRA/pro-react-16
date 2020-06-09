@@ -1,7 +1,7 @@
 // It's possible to have multiple reducers for an application, mainly to split the responsibility ~
 // ~ between different app's component in handling data changes.
 
-// This kind of "multiple reducer" will be given to store creator, the same as usual reducer.
+// This kind of "multiple reducers" will be given to store creator, the same as usual reducer.
 
 // This file will return a function that will be executed later when creating a store to create ~
 // ~ a reducer function for data store to use.
