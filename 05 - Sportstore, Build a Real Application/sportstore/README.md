@@ -1,1 +1,1 @@
-This project consist of materials from 4 chapters of the book. Each chapter's changes will be represented with a commit.
+This project consist of materials from chapter 05 to 09 of the book. Each chapter's changes will be represented with a commit.
