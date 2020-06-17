@@ -1,0 +1,1 @@
+This project consist of materials from chapter 10 to 11 of the book. Each chapter's changes will be represented with a commit.
