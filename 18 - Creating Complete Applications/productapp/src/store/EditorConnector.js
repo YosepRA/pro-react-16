@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
 import { PRODUCTS, SUPPLIERS } from './dataTypes';
-import { saveProduct, saveSupplier } from './modelActionCreators';
+// import { saveProduct, saveSupplier } from './modelActionCreators';
 import { endEditing } from './stateActions';
+import { saveAndEndEditing } from './multiActionCreators';
 
 export const EditorConnector = (dataType, presenterComponent) => {
   const mapStateToProps = dataStore => ({
@@ -41,13 +42,19 @@ export const EditorConnector = (dataType, presenterComponent) => {
   // ~ pattern above, we can explicitly call the dispatch function to send action objects to reducers. A way to do ~
   // ~ this is to give "connect" a function instead of object. If we give "connect" a function, it will give the function ~
   // ~ a dispatch function as an argument to it, enabling us to make an explicit call to trigger update phase.
-  const mapDispatchToProps = dispatch => ({
-    cancelCallback: () => dispatch(endEditing()),
-    saveCallback: data => {
-      dispatch((dataType === PRODUCTS ? saveProduct : saveSupplier)(data));
-      dispatch(endEditing());
-    },
-  });
+  // const mapDispatchToProps = dispatch => ({
+  //   cancelCallback: () => dispatch(endEditing()),
+  //   saveCallback: data => {
+  //     dispatch((dataType === PRODUCTS ? saveProduct : saveSupplier)(data));
+  //     dispatch(endEditing());
+  //   },
+  // });
+
+  // At this point, the app has an action creator and middleware which can accept multiple actions.
+  const mapDispatchToProps = {
+    saveCallback: data => saveAndEndEditing(data, dataType),
+    cancelCallback: endEditing,
+  };
 
   return connect(mapStateToProps, mapDispatchToProps)(presenterComponent);
 };
