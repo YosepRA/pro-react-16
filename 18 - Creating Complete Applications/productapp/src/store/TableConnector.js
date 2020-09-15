@@ -20,23 +20,60 @@ export const TableConnector = (dataType, presenterComponent) => {
   // ~ data for a particular component.
   // This is just a pattern, however. Don't feel obliged to use this all the time, but it's good to ~
   // ~ keep this trick in mind.
-  const mapStateToProps = dataStore => ({
-    products: dataStore.modelData[PRODUCTS],
-    suppliers: dataStore.modelData[SUPPLIERS].map(sup => ({
-      ...sup,
-      products: sup.products
-        .map(
-          id =>
-            dataStore.modelData[PRODUCTS].find(p => p.id === Number(id)) || id
-        )
-        .map(item => item.name || item),
-    })),
-  });
+  // const mapStateToProps = dataStore => ({
+  //   products: dataStore.modelData[PRODUCTS],
+  //   suppliers: dataStore.modelData[SUPPLIERS].map(sup => ({
+  //     ...sup,
+  //     products: sup.products
+  //       .map(
+  //         id =>
+  //           dataStore.modelData[PRODUCTS].find(p => p.id === Number(id)) || id
+  //       )
+  //       .map(item => item.name || item),
+  //   })),
+  // });
 
-  const mapDispatchToProps = {
-    editCallback:
-      dataType === PRODUCTS ? startEditingProduct : startEditingSupplier,
-    deleteCallback: dataType === PRODUCTS ? deleteProduct : deleteSupplier,
+  // Additional argument to the selector function.
+  const mapStateToProps = (dataStore, ownProps) => {
+    if (!ownProps.needSupplier) {
+      return {
+        products: dataStore.modelData[PRODUCTS],
+      };
+    } else {
+      return {
+        suppliers: dataStore.modelData[SUPPLIERS].map(sup => ({
+          ...sup,
+          products: sup.products
+            .map(
+              id =>
+                dataStore.modelData[PRODUCTS].find(p => p.id === Number(id)) ||
+                id
+            )
+            .map(item => item.name || item),
+        })),
+      };
+    }
+  };
+
+  // const mapDispatchToProps = {
+  //   editCallback:
+  //     dataType === PRODUCTS ? startEditingProduct : startEditingSupplier,
+  //   deleteCallback: dataType === PRODUCTS ? deleteProduct : deleteSupplier,
+  // };
+
+  // Additional argument to the function props map (when defined as a function).
+  const mapDispatchToProps = (dispatch, ownProps) => {
+    if (!ownProps.needSupplier) {
+      return {
+        editCallback: (...args) => dispatch(startEditingProduct(...args)),
+        deleteCallback: (...args) => dispatch(deleteProduct(...args)),
+      };
+    } else {
+      return {
+        editCallback: (...args) => dispatch(startEditingSupplier(...args)),
+        deleteCallback: (...args) => dispatch(deleteSupplier(...args)),
+      };
+    }
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(presenterComponent);

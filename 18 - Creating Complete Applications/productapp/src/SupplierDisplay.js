@@ -66,7 +66,7 @@ export const SupplierDisplay = connectFunction(
               editCallback={this.startEditing}
               deleteCallback={this.props.deleteCallback}
             /> */}
-            <ConnectedTable />
+            <ConnectedTable needSupplier={true} />
             <div className="text-center">
               <button
                 className="btn btn-primary m-1"
