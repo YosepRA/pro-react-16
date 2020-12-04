@@ -1,24 +1,9 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { PRODUCTS, SUPPLIERS } from './dataTypes';
-// import { saveProduct, saveSupplier } from './modelActionCreators';
-import { endEditing } from './stateActions';
 import { saveAndEndEditing } from './multiActionCreators';
 
 export const EditorConnector = (dataType, presenterComponent) => {
-  const mapStateToProps = dataStore => ({
-    editing:
-      dataStore.stateData.editing &&
-      dataStore.stateData.selectedType === dataType,
-    product:
-      dataStore.modelData[PRODUCTS].find(
-        p => p.id === dataStore.stateData.selectedId
-      ) || {},
-    supplier:
-      dataStore.modelData[SUPPLIERS].find(
-        p => p.id === dataStore.stateData.selectedId
-      ) || {},
-  });
-
   // const mapDispatchToProps = {
   //   saveCallback: dataType === PRODUCTS ? saveProduct : saveSupplier,
   //   cancelCallback: endEditing,
@@ -51,10 +36,41 @@ export const EditorConnector = (dataType, presenterComponent) => {
   // });
 
   // At this point, the app has an action creator and middleware which can accept multiple actions.
-  const mapDispatchToProps = {
-    saveCallback: data => saveAndEndEditing(data, dataType),
-    cancelCallback: endEditing,
+  // const mapDispatchToProps = {
+  //   saveCallback: data => saveAndEndEditing(data, dataType),
+  //   cancelCallback: endEditing,
+  // };
+
+  const mapStateToProps = (storeData, ownProps) => {
+    const mode = ownProps.match.params.mode;
+    const id = Number(ownProps.match.params.id);
+
+    return {
+      editing: mode === 'edit' || mode === 'create',
+      product: storeData.modelData[PRODUCTS].find(p => p.id === id) || {},
+      supplier: storeData.modelData[SUPPLIERS].find(s => s.id === id) || {},
+    };
   };
 
-  return connect(mapStateToProps, mapDispatchToProps)(presenterComponent);
+  const mapDispatchToProps = {
+    saveCallback: data => saveAndEndEditing(data, dataType),
+  };
+
+  // This will be the third argument for 'react-redux' connect function. It's a function to customize ~
+  // ~ the final props layout that will be given to the connected component.
+  const mergeProps = (stateProps, dispatchProps, ownProps) => {
+    const routedDispatchers = {
+      cancelCallback: () => ownProps.history.push(`/${dataType}`),
+      saveCallback: data => {
+        dispatchProps.saveCallback(data);
+        ownProps.history.push(`/${dataType}`);
+      },
+    };
+
+    return Object.assign({}, stateProps, routedDispatchers, ownProps);
+  };
+
+  return withRouter(
+    connect(mapStateToProps, mapDispatchToProps, mergeProps)(presenterComponent)
+  );
 };

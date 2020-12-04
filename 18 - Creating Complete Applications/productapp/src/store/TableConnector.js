@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { PRODUCTS, SUPPLIERS } from './dataTypes';
 import { deleteProduct, deleteSupplier } from './modelActionCreators';
-import { startEditingProduct, startEditingSupplier } from './stateActions';
+// import { startEditingProduct, startEditingSupplier } from './stateActions';
 
 export const TableConnector = (dataType, presenterComponent) => {
   // const mapStateToProps = dataStore => ({
@@ -35,7 +36,7 @@ export const TableConnector = (dataType, presenterComponent) => {
 
   // Additional argument to the selector function.
   const mapStateToProps = (dataStore, ownProps) => {
-    if (!ownProps.needSupplier) {
+    if (dataType === PRODUCTS) {
       return {
         products: dataStore.modelData[PRODUCTS],
       };
@@ -63,18 +64,31 @@ export const TableConnector = (dataType, presenterComponent) => {
 
   // Additional argument to the function props map (when defined as a function).
   const mapDispatchToProps = (dispatch, ownProps) => {
-    if (!ownProps.needSupplier) {
+    if (dataType === PRODUCTS) {
       return {
-        editCallback: (...args) => dispatch(startEditingProduct(...args)),
+        // editCallback: (...args) => dispatch(startEditingProduct(...args)),
         deleteCallback: (...args) => dispatch(deleteProduct(...args)),
       };
     } else {
       return {
-        editCallback: (...args) => dispatch(startEditingSupplier(...args)),
+        // editCallback: (...args) => dispatch(startEditingSupplier(...args)),
         deleteCallback: (...args) => dispatch(deleteSupplier(...args)),
       };
     }
   };
 
-  return connect(mapStateToProps, mapDispatchToProps)(presenterComponent);
+  const mergeProps = (stateProps, dispatchProps, ownProps) => {
+    let routedDispatchers = {
+      editCallback: target => {
+        ownProps.history.push(`/${dataType}/edit/${target.id}`);
+      },
+      deleteCallback: dispatchProps.deleteCallback,
+    };
+
+    return Object.assign({}, stateProps, routedDispatchers, ownProps);
+  };
+
+  return withRouter(
+    connect(mapStateToProps, mapDispatchToProps, mergeProps)(presenterComponent)
+  );
 };
