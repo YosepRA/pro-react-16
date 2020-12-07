@@ -12,9 +12,6 @@ import { STORE, UPDATE, DELETE } from './modelActionTypes';
 
 let idCounter = 100;
 
-export const saveProduct = product => createSaveEvent(PRODUCTS, product);
-export const saveSupplier = supplier => createSaveEvent(SUPPLIERS, supplier);
-
 const createSaveEvent = (dataType, payload) => {
   if (!payload.id) {
     return { type: STORE, dataType, payload: { ...payload, id: idCounter++ } };
@@ -22,6 +19,9 @@ const createSaveEvent = (dataType, payload) => {
     return { type: UPDATE, dataType, payload };
   }
 };
+
+export const saveProduct = product => createSaveEvent(PRODUCTS, product);
+export const saveSupplier = supplier => createSaveEvent(SUPPLIERS, supplier);
 
 export const deleteProduct = product => ({
   type: DELETE,

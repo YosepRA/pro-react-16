@@ -2,7 +2,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { PRODUCTS, SUPPLIERS } from './dataTypes';
 import { deleteProduct, deleteSupplier } from './modelActionCreators';
-// import { startEditingProduct, startEditingSupplier } from './stateActions';
+import { getData } from '../webservice/RestMiddleware';
+import { DataGetter } from '../DataGetter';
 
 export const TableConnector = (dataType, presenterComponent) => {
   // const mapStateToProps = dataStore => ({
@@ -56,26 +57,14 @@ export const TableConnector = (dataType, presenterComponent) => {
     }
   };
 
-  // const mapDispatchToProps = {
-  //   editCallback:
-  //     dataType === PRODUCTS ? startEditingProduct : startEditingSupplier,
-  //   deleteCallback: dataType === PRODUCTS ? deleteProduct : deleteSupplier,
-  // };
-
   // Additional argument to the function props map (when defined as a function).
-  const mapDispatchToProps = (dispatch, ownProps) => {
-    if (dataType === PRODUCTS) {
-      return {
-        // editCallback: (...args) => dispatch(startEditingProduct(...args)),
-        deleteCallback: (...args) => dispatch(deleteProduct(...args)),
-      };
-    } else {
-      return {
-        // editCallback: (...args) => dispatch(startEditingSupplier(...args)),
-        deleteCallback: (...args) => dispatch(deleteSupplier(...args)),
-      };
-    }
-  };
+  const mapDispatchToProps = (dispatch, ownProps) => ({
+    getData: type => dispatch(getData(type)),
+    deleteCallback:
+      dataType === PRODUCTS
+        ? (...args) => dispatch(deleteProduct(...args))
+        : (...args) => dispatch(deleteSupplier(...args)),
+  });
 
   const mergeProps = (stateProps, dispatchProps, ownProps) => {
     let routedDispatchers = {
@@ -83,12 +72,17 @@ export const TableConnector = (dataType, presenterComponent) => {
         ownProps.history.push(`/${dataType}/edit/${target.id}`);
       },
       deleteCallback: dispatchProps.deleteCallback,
+      getData: dispatchProps.getData,
     };
 
     return Object.assign({}, stateProps, routedDispatchers, ownProps);
   };
 
   return withRouter(
-    connect(mapStateToProps, mapDispatchToProps, mergeProps)(presenterComponent)
+    connect(
+      mapStateToProps,
+      mapDispatchToProps,
+      mergeProps
+    )(DataGetter(dataType, presenterComponent))
   );
 };

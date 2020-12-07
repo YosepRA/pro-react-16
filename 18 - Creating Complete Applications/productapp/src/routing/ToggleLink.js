@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 
 export class ToggleLink extends Component {
   constructor() {
@@ -28,23 +28,23 @@ export class ToggleLink extends Component {
             routeProps.match ? activeClass : inActiveClass
           }`;
 
-          // return (
-          //   <Link to={this.props.to} className={combinedClass}>
-          //     {this.props.children}
-          //   </Link>
-          // );
-
           return (
-            <React.Fragment>
-              {this.state.doRedirect && <Redirect to={this.props.to} />}
-              <button
-                className={combinedClass}
-                onClick={() => this.handleClick(routeProps.history)}
-              >
-                {this.props.children}
-              </button>
-            </React.Fragment>
+            <Link to={this.props.to} className={combinedClass}>
+              {this.props.children}
+            </Link>
           );
+
+          // return (
+          //   <React.Fragment>
+          //     {this.state.doRedirect && <Redirect to={this.props.to} />}
+          //     <button
+          //       className={combinedClass}
+          //       onClick={() => this.handleClick(routeProps.history)}
+          //     >
+          //       {this.props.children}
+          //     </button>
+          //   </React.Fragment>
+          // );
         }}
       </Route>
     );

@@ -7,6 +7,9 @@ import {
 } from 'react-router-dom';
 import { ToggleLink } from './routing/ToggleLink';
 import { RoutedDisplay } from './routing/RoutedDisplay';
+import { IsolatedTable } from './IsolatedTable';
+import { IsolatedEditor } from './IsolatedEditor';
+import { RequestError } from './webservice/RequestError';
 
 export class Selector extends Component {
   render() {
@@ -22,6 +25,8 @@ export class Selector extends Component {
         <div className="container-fluid">
           <div className="row">
             <div className="col-2">
+              <ToggleLink to="/isolated">Isolated Table</ToggleLink>
+
               {routes.map(({ name, url }) => (
                 <ToggleLink key={url} to={url}>
                   {name}
@@ -31,6 +36,12 @@ export class Selector extends Component {
 
             <div className="col">
               <Switch>
+                <Route path="/isolated" component={IsolatedTable} exact />
+
+                <Route path="/isolated/:mode/:id?" component={IsolatedEditor} />
+
+                <Route path="/error/:message" component={RequestError} />
+
                 {routes.map(({ url, datatype }) => (
                   <Route
                     key={url}
@@ -39,7 +50,7 @@ export class Selector extends Component {
                   />
                 ))}
 
-                {/* <Redirect to={routes[0].url} /> */}
+                <Redirect to={routes[0].url} />
               </Switch>
             </div>
           </div>
