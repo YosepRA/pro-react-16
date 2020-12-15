@@ -4,7 +4,8 @@ import stateReducer from './stateReducer';
 import { customReducerEnhancer } from './customReducerEnhancer';
 import { multiAction } from './multiActionMiddleware';
 import { asyncEnhancer } from './asyncEnhancer';
-import { createRestMiddleware } from '../webservice/RestMiddleware';
+// import { createRestMiddleware } from '../webservice/RestMiddleware';
+import { createGraphQLMiddleware } from '../graphql/GraphQLMiddleware';
 
 const enhancedReducer = customReducerEnhancer(
   combineReducers({
@@ -13,10 +14,10 @@ const enhancedReducer = customReducerEnhancer(
   })
 );
 
-const restMiddleware = createRestMiddleware(
-  'http://localhost:3500/api/products',
-  'http://localhost:3500/api/suppliers'
-);
+// const restMiddleware = createRestMiddleware(
+//   'http://localhost:3500/api/products',
+//   'http://localhost:3500/api/suppliers'
+// );
 
 // Since "createStore" can only accept one enhancer function, Redux provides "compose" to combine multiple ~
 // ~ enhancers.
@@ -24,7 +25,7 @@ export default createStore(
   enhancedReducer,
   compose(
     applyMiddleware(multiAction),
-    applyMiddleware(restMiddleware),
+    applyMiddleware(createGraphQLMiddleware()),
     asyncEnhancer(2000)
   )
 );

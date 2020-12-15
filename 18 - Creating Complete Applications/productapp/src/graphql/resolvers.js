@@ -1,4 +1,4 @@
-const data = require('../../restData')();
+const data = require('../../graphqlData')();
 
 let nextId = 100;
 
@@ -29,14 +29,14 @@ module.exports = {
       };
     }
   },
-  storeProduct: ({ product }) => {
-    if (product.id == null) {
+  storeProduct: args => {
+    const product = { ...args, id: Number(args.id) };
+    if (args.id == null || product.id === 0) {
       // New.
       product.id = nextId++;
       data.products.push(product);
     } else {
       // Update.
-      product = { ...product, id: Number(product.id) };
       data.products = data.products.map(p =>
         p.id === product.id ? product : p
       );
@@ -60,5 +60,21 @@ module.exports = {
         products: ({ nameFilter }) => mapIdsToProducts(result, nameFilter),
       };
     }
+  },
+  deleteProduct: ({ id }) => {
+    id = Number(id);
+    // Delete from products list.
+    data.products = data.products.filter(p => p.id !== id);
+    // Delete product's ID from suppliers that have it.
+    data.suppliers = data.suppliers.map(s => {
+      s.products = s.products.filter(productId => productId !== id);
+      return s;
+    });
+    return id;
+  },
+  deleteSupplier: ({ id }) => {
+    id = Number(id);
+    data.suppliers = data.suppliers.filter(s => s.id !== id);
+    return id;
   },
 };

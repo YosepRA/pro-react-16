@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import { RestDataSource } from './webservice/RestDataSource';
+// import { RestDataSource } from './webservice/RestDataSource';
+import { GraphQLDataSource } from './graphql/GraphQLDataSource';
+import { PRODUCTS } from './store/dataTypes';
 
 export class IsolatedTable extends Component {
   constructor(props) {
@@ -9,9 +11,14 @@ export class IsolatedTable extends Component {
     this.state = {
       products: [],
     };
-    this.dataSource = new RestDataSource(
-      'http://localhost:3500/api/products',
-      err => props.history.push(`/error/${err}`)
+    // this.dataSource = new RestDataSource(
+    //   'http://localhost:3500/api/products',
+    //   err => props.history.push(`/error/${err}`)
+    // );
+
+    // GraphQL.
+    this.dataSource = new GraphQLDataSource(PRODUCTS, err =>
+      props.history.push(`/error/${err}`)
     );
   }
 

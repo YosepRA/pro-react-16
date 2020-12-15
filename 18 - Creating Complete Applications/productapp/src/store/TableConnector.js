@@ -2,7 +2,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { PRODUCTS, SUPPLIERS } from './dataTypes';
 import { deleteProduct, deleteSupplier } from './modelActionCreators';
-import { getData } from '../webservice/RestMiddleware';
+// import { getData } from '../webservice/RestMiddleware';
+import { getData } from '../graphql/GraphQLMiddleware';
 import { DataGetter } from '../DataGetter';
 
 export const TableConnector = (dataType, presenterComponent) => {
@@ -36,23 +37,37 @@ export const TableConnector = (dataType, presenterComponent) => {
   // });
 
   // Additional argument to the selector function.
-  const mapStateToProps = (dataStore, ownProps) => {
+  // const mapStateToProps = (dataStore, ownProps) => {
+  //   if (dataType === PRODUCTS) {
+  //     return {
+  //       products: dataStore.modelData[PRODUCTS],
+  //     };
+  //   } else {
+  //     return {
+  //       suppliers: dataStore.modelData[SUPPLIERS].map(sup => ({
+  //         ...sup,
+  //         products: sup.products
+  //           .map(
+  //             id =>
+  //               dataStore.modelData[PRODUCTS].find(p => p.id === Number(id)) ||
+  //               id
+  //           )
+  //           .map(item => item.name || item),
+  //       })),
+  //     };
+  //   }
+  // };
+
+  // With the addition of GraphQL, suppliers no longer need a separate product mapping because GraphQL ~
+  // ~ query has done the products mapping.
+  const mapStateToProps = dataStore => {
     if (dataType === PRODUCTS) {
       return {
         products: dataStore.modelData[PRODUCTS],
       };
     } else {
       return {
-        suppliers: dataStore.modelData[SUPPLIERS].map(sup => ({
-          ...sup,
-          products: sup.products
-            .map(
-              id =>
-                dataStore.modelData[PRODUCTS].find(p => p.id === Number(id)) ||
-                id
-            )
-            .map(item => item.name || item),
-        })),
+        suppliers: dataStore.modelData[SUPPLIERS],
       };
     }
   };

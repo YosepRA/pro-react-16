@@ -20,7 +20,11 @@ export class ProductEditor extends Component {
       return { formData: newFormData };
     });
 
-  handleClick = () => this.props.saveCallback(this.state.formData);
+  handleClick = () =>
+    this.props.saveCallback({
+      ...this.state.formData,
+      price: Number(this.state.formData.price),
+    });
 
   render() {
     const { id, name, category, price } = this.state.formData;
